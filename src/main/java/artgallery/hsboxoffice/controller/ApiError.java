@@ -10,9 +10,6 @@ import org.springframework.http.HttpStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * ApiError
- */
 @Getter
 public class ApiError {
 

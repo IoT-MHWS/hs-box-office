@@ -5,9 +5,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.data.relational.core.mapping.Column;
 
-@Getter
-@Setter
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -25,6 +22,6 @@ public class TicketEntity {
     private Integer price;
 
     @Column("exhibition")
-    private Long exhibition; // from int
+    private Long exhibition;
 
 }

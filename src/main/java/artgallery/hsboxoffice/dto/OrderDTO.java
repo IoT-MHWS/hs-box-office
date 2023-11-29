@@ -1,5 +1,6 @@
 package artgallery.hsboxoffice.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderDTO {
+    @NotNull
     private long id;
     private LocalDateTime date;
+    @NotNull(message = "Order must have user")
     private String login;
 }

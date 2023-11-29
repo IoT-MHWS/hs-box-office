@@ -6,9 +6,6 @@ import org.springframework.data.relational.core.mapping.Table;
 import org.springframework.data.relational.core.mapping.Column;
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
