@@ -5,13 +5,16 @@ spring:
   application:
     name: hs-box-office
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/ms2
-    username: postgres
-    password: ${HS_BOX_PASSWORD}
+    url: r2dbc:postgresql://${HS_BOX_OFFICE_DATASOURCE_HOST}:${HS_BOX_OFFICE_DATASOURCE_PORT}/${HS_BOX_OFFICE_DATASOURCE_DATABASE}
+    username: ${HS_BOX_OFFICE_DATASOURCE_USERNAME}
+    password: ${HS_BOX_OFFICE_DATASOURCE_PASSWORD}
 
 eureka:
+  instance:
+    appname: hs-box-office
   client:
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+#      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${HS_USER_EUREKA_URI:http://localhost:8761/eureka}
 
 
