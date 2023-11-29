@@ -2,6 +2,10 @@ package artgallery.hsboxoffice.controller;
 
 import artgallery.hsboxoffice.dto.OrderDTO;
 import artgallery.hsboxoffice.service.OrderService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -11,20 +15,16 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/orders")
 public class OrderController {
 
+    @Autowired
     private final OrderService orderService;
 
-    @Autowired
-    public OrderController(OrderService orderService){
-        this.orderService = orderService;
-    }
-
     @GetMapping("/")
-    public Mono<ResponseEntity<?>> getAllOrders(@RequestParam(value = "page", defaultValue = "0") int page,
-                                                 @RequestParam(value = "size", defaultValue = "10") int size) {
-        validateSizeOfPage(size);
+    public Mono<ResponseEntity<?>> getAllOrders(@Min(0) @RequestParam(value = "page", defaultValue = "0") int page,
+                                                @Min(0) @Max(50) @RequestParam(value = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return orderService.getAllOrders(pageable)
                 .collectList()
@@ -34,14 +34,13 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public Mono<ResponseEntity<?>> getOrderById(@PathVariable("id") long id) {
+    public Mono<ResponseEntity<?>> getOrderById(@Min(0) @PathVariable("id") long id) {
         return orderService.getOrderById(id)
                 .map(order -> ResponseEntity.ok().body(order));
     }
 
     @PostMapping("/")
-    public Mono<ResponseEntity<?>> createOrder(@RequestBody OrderDTO orderDTO) {
-        validateOrderDto(orderDTO);
+    public Mono<ResponseEntity<?>> createOrder(@Valid @RequestBody OrderDTO orderDTO) {
         return orderService.createOrder(orderDTO)
                 .map(createdOrder -> ResponseEntity.status(HttpStatus.CREATED).body(createdOrder));
 
@@ -60,34 +59,15 @@ public class OrderController {
      **/
 
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<?>> updateOrder(@PathVariable("id") long id, @RequestBody OrderDTO orderDTO) {
-        validateOrderDto(orderDTO);
+    public Mono<ResponseEntity<?>> updateOrder(@Min(0) @PathVariable("id") long id, @Valid @RequestBody OrderDTO orderDTO) {
         return orderService.updateOrder(id, orderDTO)
                 .map(updatedOrder-> ResponseEntity.ok().body(updatedOrder));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<ResponseEntity<?>> deleteOrder(@PathVariable("id") long id) {
+    public Mono<ResponseEntity<?>> deleteOrder(@Min(0) @PathVariable("id") long id) {
         return orderService.deleteOrder(id)
                 .map(deleted -> ResponseEntity.noContent().build());
-    }
-
-    private void validateSizeOfPage(int size) {
-        if (size > 50) {
-            throw new IllegalArgumentException("Size of page must be <= 50");
-        }
-    }
-
-    private void validateOrderDto(OrderDTO orderDTO) {
-        if (orderDTO == null) {
-            throw new IllegalArgumentException("Order is not set");
-        }
-        if (orderDTO.getDate() == null) {
-            throw new IllegalArgumentException("Invalid date value");
-        }
-        if (orderDTO.getLogin() == null) {
-            throw new IllegalArgumentException("Invalid user login value");
-        }
     }
 }

@@ -2,6 +2,7 @@ package artgallery.hsboxoffice.exception;
 
 import artgallery.hsboxoffice.controller.ApiError;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -40,4 +41,13 @@ public class CustomExceptionExecutor {
         return new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
     }
 
+    @ResponseBody
+    @ExceptionHandler({
+            MethodArgumentNotValidException.class
+    })
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    public ApiError notCorrectMethodArgumentValue(Exception ex) {
+
+        return new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+    }
 }
