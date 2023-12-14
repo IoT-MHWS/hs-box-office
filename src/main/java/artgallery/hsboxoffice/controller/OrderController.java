@@ -1,8 +1,7 @@
 package artgallery.hsboxoffice.controller;
 
-import artgallery.hsboxoffice.dto.OrderDTO;
+import artgallery.hsboxoffice.dto.OrderCreateDTO;
 import artgallery.hsboxoffice.service.OrderService;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
@@ -40,27 +39,19 @@ public class OrderController {
     }
 
     @PostMapping("/")
-    public Mono<ResponseEntity<?>> createOrder(@Valid @RequestBody OrderDTO orderDTO) {
-        return orderService.createOrder(orderDTO)
-                .map(createdOrder -> ResponseEntity.status(HttpStatus.CREATED).body(createdOrder));
+    public Mono<ResponseEntity<?>> createOrder(@RequestBody OrderCreateDTO orderCreateDTO,
+                                               @RequestHeader(name = "X-User-Name") String login) {
 
-    }
-
-    /** ---  with auth  ---
-     *
-     *
-    @PostMapping("/")
-    public Mono<ResponseEntity<?>> createOrder(@RequestBody OrderDTO orderDTO,
-                                               @RequestHeader(name = "x-user-login") String login) {
-        validateOrderDto(orderDTO);
-        return orderService.createOrder(orderDTO, userLogin)
+        return orderService.createOrder(orderCreateDTO, login)
                 .map(createdOrder -> ResponseEntity.status(HttpStatus.CREATED).body(createdOrder));
     }
-     **/
+
 
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<?>> updateOrder(@Min(0) @PathVariable("id") long id, @Valid @RequestBody OrderDTO orderDTO) {
-        return orderService.updateOrder(id, orderDTO)
+    public Mono<ResponseEntity<?>> updateOrder(@Min(0) @PathVariable("id") long id,
+                                               @RequestBody OrderCreateDTO orderCreateDTO,
+                                               @RequestHeader(name = "X-User-Name") String login) {
+        return orderService.updateOrder(id, orderCreateDTO, login)
                 .map(updatedOrder-> ResponseEntity.ok().body(updatedOrder));
     }
 

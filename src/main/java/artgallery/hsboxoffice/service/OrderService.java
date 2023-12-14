@@ -1,5 +1,6 @@
 package artgallery.hsboxoffice.service;
 
+import artgallery.hsboxoffice.dto.OrderCreateDTO;
 import artgallery.hsboxoffice.dto.OrderDTO;
 import artgallery.hsboxoffice.exception.OrderDoesNotExistException;
 import artgallery.hsboxoffice.model.OrderEntity;
@@ -26,19 +27,18 @@ public class OrderService {
                 .map(this::mapToOrderDto);
     }
 
-    //TODO rewrite for login field + map
-    public Mono<OrderDTO> createOrder(OrderDTO orderDTO) {
-        OrderEntity orderEntity = this.mapToOrderEntity(orderDTO);
+    public Mono<OrderDTO> createOrder(OrderCreateDTO orderCreateDTO, String login) {
+        OrderEntity orderEntity = this.mapToOrderEntityWithLoginFromHeader(orderCreateDTO, login);
         return orderRepository.save(orderEntity)
                 .map(this::mapToOrderDto);
     }
 
-    public Mono<OrderDTO> updateOrder(long id, OrderDTO orderDTO) {
+    public Mono<OrderDTO> updateOrder(long id, OrderCreateDTO orderCreateDTO, String login) {
         return orderRepository.findById(id)
                 .switchIfEmpty(Mono.error(new OrderDoesNotExistException(id)))
                 .flatMap(existingOrder -> {
-                    existingOrder.setDate(orderDTO.getDate());
-                    existingOrder.setLogin(orderDTO.getLogin());
+                    existingOrder.setDate(orderCreateDTO.getDate());
+                    existingOrder.setLogin(login);
                     return orderRepository.save(existingOrder);
                 })
                 .map(this::mapToOrderDto);
@@ -48,10 +48,10 @@ public class OrderService {
         return orderRepository.deleteById(id);
     }
 
-    private OrderEntity mapToOrderEntity(OrderDTO orderDTO) {
+    private OrderEntity mapToOrderEntityWithLoginFromHeader(OrderCreateDTO orderCreateDTO, String login) {
         OrderEntity orderEntity = new OrderEntity();
-        orderEntity.setDate(orderDTO.getDate());
-        orderEntity.setLogin(orderDTO.getLogin());
+        orderEntity.setDate(orderCreateDTO.getDate());
+        orderEntity.setLogin(login);
         return orderEntity;
     }
 
@@ -59,6 +59,5 @@ public class OrderService {
         return new OrderDTO(orderEntity.getId(),
                 orderEntity.getDate(), orderEntity.getLogin());
     }
-
 }
 

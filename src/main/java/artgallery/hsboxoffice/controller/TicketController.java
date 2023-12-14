@@ -24,11 +24,6 @@ public class TicketController {
     @Autowired
     private final TicketService ticketService;
 
-//    @Autowired
-//    public TicketController(TicketService ticketService){
-//        this.ticketService = ticketService;
-//    }
-
     @GetMapping("/")
     public Mono<ResponseEntity<?>> getAllTickets(@Min(0) @RequestParam(value = "page", defaultValue = "0") int page,
                                                  @Min(0) @Max(50) @RequestParam(value = "size", defaultValue = "10") int size) {
@@ -48,6 +43,7 @@ public class TicketController {
     }
 
     @PostMapping("/")
+    @ResponseStatus(HttpStatus.CREATED)
     public Mono<ResponseEntity<?>> createTicket(@Valid  @RequestBody TicketDTO ticketDto) {
         return ticketService.createTicket(ticketDto)
                     .map(createdTicket -> ResponseEntity.status(HttpStatus.CREATED).body(createdTicket));
