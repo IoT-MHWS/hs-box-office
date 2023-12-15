@@ -15,6 +15,6 @@ eureka:
   client:
     serviceUrl:
 #      defaultZone: http://localhost:8761/eureka/
-      defaultZone: ${HS_USER_EUREKA_URI:http://localhost:8761/eureka}
+      defaultZone: ${HS_BOX_OFFICE_EUREKA_URI:http://localhost:8761/eureka}
 
 
