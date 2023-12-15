@@ -24,3 +24,8 @@ eureka:
 #         security: DEBUG
 #         web: DEBUG
 #       hibernate: ERROR
+# logging:
+#   level:
+#     org:
+#       springframework:
+#         security: DEBUG
