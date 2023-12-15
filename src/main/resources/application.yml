@@ -17,4 +17,9 @@ eureka:
 #      defaultZone: http://localhost:8761/eureka/
       defaultZone: ${HS_BOX_OFFICE_EUREKA_URI:http://localhost:8761/eureka}
 
-
+# logging:
+#   level:
+#     org:
+#       springframework:
+#         web: DEBUG
+#       hibernate: ERROR
