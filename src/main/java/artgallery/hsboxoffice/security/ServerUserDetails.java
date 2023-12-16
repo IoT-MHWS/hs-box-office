@@ -28,9 +28,9 @@ public class ServerUserDetails implements UserDetails {
       } else {
         roles = new ArrayList<>();
       }
-      return roles.stream()
-              .map(role -> new SimpleGrantedAuthority(role.substring(5)))
-              .collect(Collectors.toList());
+        return roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 
     public Long getId() {

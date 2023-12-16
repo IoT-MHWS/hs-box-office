@@ -42,7 +42,7 @@ public class OrderController {
     }
 
     @PostMapping("/")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public Mono<ResponseEntity<?>> createOrder(@RequestBody OrderCreateDTO orderCreateDTO,
                                                @RequestHeader(name = "X-User-Name") String login) {
 
@@ -52,7 +52,7 @@ public class OrderController {
 
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public Mono<ResponseEntity<?>> updateOrder(@Min(0) @PathVariable("id") long id,
                                                @RequestBody OrderCreateDTO orderCreateDTO,
                                                @RequestHeader(name = "X-User-Name") String login) {

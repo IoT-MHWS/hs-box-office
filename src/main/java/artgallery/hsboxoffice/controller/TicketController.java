@@ -45,7 +45,7 @@ public class TicketController {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public Mono<ResponseEntity<?>> createTicket(@Valid  @RequestBody TicketDTO ticketDto) {
         return ticketService.createTicket(ticketDto)
                     .map(createdTicket -> ResponseEntity.status(HttpStatus.CREATED).body(createdTicket));
@@ -53,7 +53,7 @@ public class TicketController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public Mono<ResponseEntity<?>> updateTicket(@Min(0) @PathVariable("id") long id, @Valid @RequestBody TicketDTO ticketDto) {
         return ticketService.updateTicket(id, ticketDto)
                     .map(updatedTicket -> ResponseEntity.ok().body(updatedTicket));
