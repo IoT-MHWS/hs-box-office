@@ -8,10 +8,10 @@ services:
     image: postgres:16.0-alpine
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PASSWORD: example
       POSTGRES_DATABASE: db_box_office
-      HS_POSTGRES_USERNAME: ${HS_POSTGRES_USERNAME}
-      HS_POSTGRES_PASSWORD: ${HS_POSTGRES_PASSWORD}
+      HS_POSTGRES_USERNAME: hs
+      HS_POSTGRES_PASSWORD: example
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./services/postgres/entrypoint/:/docker-entrypoint-initdb.d/
@@ -21,8 +21,8 @@ services:
     depends_on:
       - postgres
     environment:
-      LIQUIBASE_COMMAND_USERNAME: ${HS_POSTGRES_USERNAME}
-      LIQUIBASE_COMMAND_PASSWORD: ${HS_POSTGRES_PASSWORD}
+      LIQUIBASE_COMMAND_USERNAME: hs
+      LIQUIBASE_COMMAND_PASSWORD: example
       LIQUIBASE_COMMAND_URL : jdbc:postgresql://postgres:5432/db_box_office
     volumes:
       - ./services/liquibase/changelog:/liquibase/changelog
@@ -40,8 +40,8 @@ services:
       HS_BOX_OFFICE_DATASOURCE_HOST: postgres 
       HS_BOX_OFFICE_DATASOURCE_PORT: 5432
       HS_BOX_OFFICE_DATASOURCE_DATABASE: db_box_office
-      HS_BOX_OFFICE_DATASOURCE_USERNAME: ${HS_POSTGRES_USERNAME}
-      HS_BOX_OFFICE_DATASOURCE_PASSWORD: ${HS_POSTGRES_PASSWORD}
+      HS_BOX_OFFICE_DATASOURCE_USERNAME: hs
+      HS_BOX_OFFICE_DATASOURCE_PASSWORD: example
 
 volumes:
   postgres-data:
