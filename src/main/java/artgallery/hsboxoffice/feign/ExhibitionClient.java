@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.*;
 public interface ExhibitionClient {
 
     @GetMapping("/api/v1/exhibitions/{id}")
-    ResponseEntity<ExhibitionDTO> getFeidn(@PathVariable("id") Long id,
-                            @RequestHeader("X-User-Id") String value1,
-                            @RequestHeader("X-User-Name") String value2,
-                            @RequestHeader("X-User-Authorities") String value3);
+    ResponseEntity<ExhibitionDTO> getExhibitionById(@PathVariable("id") Long id,
+                                                    @RequestHeader("X-User-Id") String value1,
+                                                    @RequestHeader("X-User-Name") String value2,
+                                                    @RequestHeader("X-User-Authorities") String value3);
 
 }

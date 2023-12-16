@@ -37,7 +37,7 @@ public class TicketService {
         long exhibitionId = ticketDto.getExhibition();
         try {
             ResponseEntity<ExhibitionDTO> response =
-                    exhibitionClient.getFeidn(exhibitionId, "777", "from-feign-client", "ROLE_PUBLIC");
+                    exhibitionClient.getExhibitionById(exhibitionId, "777", "from-feign-client", "ROLE_PUBLIC");
             HttpStatusCode status = response.getStatusCode();
             System.out.println("HTTP status code: " + status.value());
             if (status.value() == 200) {
@@ -58,7 +58,7 @@ public class TicketService {
         long prepareExhibitionId = Long.valueOf(0);
         try {
             ResponseEntity<ExhibitionDTO> response =
-                    exhibitionClient.getFeidn(exhibitionId, "777", "from-feign-client", "ROLE_PUBLIC");
+                    exhibitionClient.getExhibitionById(exhibitionId, "777", "from-feign-client", "ROLE_PUBLIC");
             HttpStatusCode status = response.getStatusCode();
             System.out.println("HTTP status code: " + status.value());
             if (status.value() == 200) {
