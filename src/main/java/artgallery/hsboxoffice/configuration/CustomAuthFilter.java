@@ -1,4 +1,4 @@
-package artgallery.hsboxoffice.security;
+package artgallery.hsboxoffice.configuration;
 
 
 import org.slf4j.Logger;
@@ -17,7 +17,6 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-@Component
 public class CustomAuthFilter extends AuthenticationWebFilter {
   private static final Logger logger = LoggerFactory.getLogger(CustomAuthFilter.class);
   private static final String HEADER_USER_ID = "X-User-Id";

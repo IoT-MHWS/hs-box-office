@@ -1,4 +1,4 @@
-package artgallery.hsboxoffice.security;
+package artgallery.hsboxoffice.configuration;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -37,9 +37,17 @@ public class ServerUserDetails implements UserDetails {
       return userId;
     }
 
+    public String getIdAsString() {
+        return String.valueOf(userId);
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
+    }
+
+    public String getAuthoritiesAsString() {
+        return String.join(",", authorities.stream().map(GrantedAuthority::toString).toList());
     }
 
     @Override

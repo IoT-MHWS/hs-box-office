@@ -27,18 +27,18 @@ public class OrderService {
                 .map(this::mapToOrderDto);
     }
 
-    public Mono<OrderDTO> createOrder(OrderCreateDTO orderCreateDTO, String login) {
-        OrderEntity orderEntity = this.mapToOrderEntityWithLoginFromHeader(orderCreateDTO, login);
+    public Mono<OrderDTO> createOrder(OrderCreateDTO orderCreateDTO) {
+        OrderEntity orderEntity = this.mapToOrderEntity(orderCreateDTO);
         return orderRepository.save(orderEntity)
                 .map(this::mapToOrderDto);
     }
 
-    public Mono<OrderDTO> updateOrder(long id, OrderCreateDTO orderCreateDTO, String login) {
+    public Mono<OrderDTO> updateOrder(long id, OrderCreateDTO orderCreateDTO) {
         return orderRepository.findById(id)
                 .switchIfEmpty(Mono.error(new OrderDoesNotExistException(id)))
                 .flatMap(existingOrder -> {
                     existingOrder.setDate(orderCreateDTO.getDate());
-                    existingOrder.setLogin(login);
+                    existingOrder.setLogin(orderCreateDTO.getLogin());
                     return orderRepository.save(existingOrder);
                 })
                 .map(this::mapToOrderDto);
@@ -48,10 +48,10 @@ public class OrderService {
         return orderRepository.deleteById(id);
     }
 
-    private OrderEntity mapToOrderEntityWithLoginFromHeader(OrderCreateDTO orderCreateDTO, String login) {
+    private OrderEntity mapToOrderEntity(OrderCreateDTO orderCreateDTO) {
         OrderEntity orderEntity = new OrderEntity();
         orderEntity.setDate(orderCreateDTO.getDate());
-        orderEntity.setLogin(login);
+        orderEntity.setLogin(orderCreateDTO.getLogin());
         return orderEntity;
     }
 

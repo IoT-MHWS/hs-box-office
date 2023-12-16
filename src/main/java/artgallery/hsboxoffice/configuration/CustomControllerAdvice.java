@@ -1,6 +1,9 @@
-package artgallery.hsboxoffice.exception;
+package artgallery.hsboxoffice.configuration;
 
 import artgallery.hsboxoffice.controller.ApiError;
+import artgallery.hsboxoffice.exception.DatabaseConflictException;
+import artgallery.hsboxoffice.exception.DoesNotExistException;
+import feign.FeignException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -9,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
-public class CustomExceptionExecutor {
+public class CustomControllerAdvice {
 
     @ResponseBody
     @ExceptionHandler({
@@ -18,7 +21,7 @@ public class CustomExceptionExecutor {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError notFound(Exception ex) {
 
-        return new ApiError(HttpStatus.NOT_FOUND, ex.getMessage());
+        return new ApiError(HttpStatus.NOT_FOUND, ex);
     }
 
     @ResponseBody
@@ -28,26 +31,26 @@ public class CustomExceptionExecutor {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError exIndb(Exception ex) {
 
-        return new ApiError(HttpStatus.CONFLICT, ex.getMessage());
+        return new ApiError(HttpStatus.CONFLICT, ex);
     }
 
     @ResponseBody
     @ExceptionHandler({
-            IllegalArgumentException.class
+            IllegalArgumentException.class,
+            MethodArgumentNotValidException.class
     })
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public ApiError notCorrect(Exception ex) {
 
-        return new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+        return new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, ex);
     }
 
     @ResponseBody
     @ExceptionHandler({
-            MethodArgumentNotValidException.class
+        FeignException.class
     })
-    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    public ApiError notCorrectMethodArgumentValue(Exception ex) {
-
-        return new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+    @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+    public ApiError feignException(Exception ex) {
+        return new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, ex);
     }
 }
