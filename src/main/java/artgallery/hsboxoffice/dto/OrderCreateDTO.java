@@ -11,5 +11,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderCreateDTO {
+    private String login;
     private LocalDateTime date;
 }

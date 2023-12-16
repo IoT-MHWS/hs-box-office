@@ -1,6 +1,7 @@
 package artgallery.hsboxoffice.controller;
 
 import artgallery.hsboxoffice.dto.TicketDTO;
+import artgallery.hsboxoffice.configuration.ServerUserDetails;
 import artgallery.hsboxoffice.service.TicketService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
@@ -30,9 +33,7 @@ public class TicketController {
         Pageable pageable = PageRequest.of(page, size);
         return ticketService.getAllTickets(pageable)
                 .collectList()
-                .map(ticketList -> !ticketList.isEmpty() ?
-                        ResponseEntity.ok().body(ticketList) :
-                        ResponseEntity.notFound().build());
+                .map(ticketList -> ResponseEntity.ok().body(ticketList));
     }
 
     @GetMapping("/{id}")
@@ -44,15 +45,17 @@ public class TicketController {
 
     @PostMapping("/")
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<ResponseEntity<?>> createTicket(@Valid  @RequestBody TicketDTO ticketDto) {
-        return ticketService.createTicket(ticketDto)
+    @PreAuthorize("hasRole('ADMIN')")
+    public Mono<ResponseEntity<?>> createTicket(@Valid  @RequestBody TicketDTO ticketDto, @AuthenticationPrincipal ServerUserDetails userDetails) {
+        return ticketService.createTicket(ticketDto, userDetails)
                     .map(createdTicket -> ResponseEntity.status(HttpStatus.CREATED).body(createdTicket));
 
     }
 
     @PutMapping("/{id}")
-    public Mono<ResponseEntity<?>> updateTicket(@Min(0) @PathVariable("id") long id, @Valid @RequestBody TicketDTO ticketDto) {
-        return ticketService.updateTicket(id, ticketDto)
+    @PreAuthorize("hasRole('ADMIN')")
+    public Mono<ResponseEntity<?>> updateTicket(@Min(0) @PathVariable("id") long id, @Valid @RequestBody TicketDTO ticketDto, @AuthenticationPrincipal ServerUserDetails userDetails) {
+        return ticketService.updateTicket(id, ticketDto, userDetails)
                     .map(updatedTicket -> ResponseEntity.ok().body(updatedTicket));
     }
 

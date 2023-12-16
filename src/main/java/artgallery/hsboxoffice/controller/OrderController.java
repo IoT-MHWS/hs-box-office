@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -25,13 +26,11 @@ public class OrderController {
 
     @GetMapping("/")
     public Mono<ResponseEntity<?>> getAllOrders(@Min(0) @RequestParam(value = "page", defaultValue = "0") int page,
-                                                @Min(0) @Max(50) @RequestParam(value = "size", defaultValue = "10") int size, @AuthenticationPrincipal UserDetails userDetails) {
+                                                @Min(0) @Max(50) @RequestParam(value = "size", defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         return orderService.getAllOrders(pageable)
                 .collectList()
-                .map(orderList -> !orderList.isEmpty() ?
-                        ResponseEntity.ok().body(orderList) :
-                        ResponseEntity.notFound().build());
+                .map(orderList -> ResponseEntity.ok().body(orderList));
     }
 
     @GetMapping("/{id}")
@@ -40,20 +39,21 @@ public class OrderController {
                 .map(order -> ResponseEntity.ok().body(order));
     }
 
+    // NOTE: because admin role is required, it can set different login from its own
     @PostMapping("/")
-    public Mono<ResponseEntity<?>> createOrder(@RequestBody OrderCreateDTO orderCreateDTO,
-                                               @RequestHeader(name = "X-User-Name") String login) {
-
-        return orderService.createOrder(orderCreateDTO, login)
+    @PreAuthorize("hasRole('ADMIN')")
+    public Mono<ResponseEntity<?>> createOrder(@RequestBody OrderCreateDTO orderCreateDTO) {
+        return orderService.createOrder(orderCreateDTO)
                 .map(createdOrder -> ResponseEntity.status(HttpStatus.CREATED).body(createdOrder));
     }
 
 
+    // NOTE: because admin role is required, it can set different login from its own
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public Mono<ResponseEntity<?>> updateOrder(@Min(0) @PathVariable("id") long id,
-                                               @RequestBody OrderCreateDTO orderCreateDTO,
-                                               @RequestHeader(name = "X-User-Name") String login) {
-        return orderService.updateOrder(id, orderCreateDTO, login)
+                                               @RequestBody OrderCreateDTO orderCreateDTO) {
+        return orderService.updateOrder(id, orderCreateDTO)
                 .map(updatedOrder-> ResponseEntity.ok().body(updatedOrder));
     }
 

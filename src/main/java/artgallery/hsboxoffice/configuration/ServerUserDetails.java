@@ -1,8 +1,7 @@
-package artgallery.hsboxoffice.security;
+package artgallery.hsboxoffice.configuration;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,7 +21,6 @@ public class ServerUserDetails implements UserDetails {
     private String username;
     private List<GrantedAuthority> authorities;
 
-
     public static List<GrantedAuthority> extractAuthorities(String authoritiesHeader) {
       List<String> roles;
       if (StringUtils.hasText(authoritiesHeader)) {
@@ -30,7 +28,7 @@ public class ServerUserDetails implements UserDetails {
       } else {
         roles = new ArrayList<>();
       }
-      return roles.stream()
+        return roles.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
@@ -39,9 +37,17 @@ public class ServerUserDetails implements UserDetails {
       return userId;
     }
 
+    public String getIdAsString() {
+        return String.valueOf(userId);
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
+    }
+
+    public String getAuthoritiesAsString() {
+        return String.join(",", authorities.stream().map(GrantedAuthority::toString).toList());
     }
 
     @Override
