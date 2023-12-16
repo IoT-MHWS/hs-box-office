@@ -17,6 +17,12 @@ eureka:
 #      defaultZone: http://localhost:8761/eureka/
       defaultZone: ${HS_BOX_OFFICE_EUREKA_URI:http://localhost:8761/eureka}
 
+springdoc:
+  api-docs:
+    path: "/api-docs"
+  swagger-ui:
+    path: "/swagger-ui"
+
 # logging:
 #   level:
 #     org:
@@ -29,3 +35,5 @@ eureka:
 #     org:
 #       springframework:
 #         security: DEBUG
+
+
