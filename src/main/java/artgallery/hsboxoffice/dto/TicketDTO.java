@@ -12,7 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TicketDTO {
-    @NotNull
     private Long id;
     private String description;
     @DecimalMin(value = "0", message = "Price must be a positive number")
