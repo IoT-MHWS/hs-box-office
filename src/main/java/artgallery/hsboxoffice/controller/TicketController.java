@@ -43,7 +43,7 @@ public class TicketController {
 
     }
 
-    @PostMapping("/")
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")
     public Mono<ResponseEntity<?>> createTicket(@Valid  @RequestBody TicketDTO ticketDto, @AuthenticationPrincipal ServerUserDetails userDetails) {

@@ -40,7 +40,7 @@ public class OrderController {
     }
 
     // NOTE: because admin role is required, it can set different login from its own
-    @PostMapping("/")
+    @PostMapping()
     @PreAuthorize("hasRole('ADMIN')")
     public Mono<ResponseEntity<?>> createOrder(@RequestBody OrderCreateDTO orderCreateDTO) {
         return orderService.createOrder(orderCreateDTO)
