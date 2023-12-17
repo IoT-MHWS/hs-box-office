@@ -17,6 +17,7 @@ import org.springframework.security.config.annotation.web.reactive.EnableWebFlux
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
 
@@ -70,6 +71,7 @@ public class SecurityConfiguration {
     @Bean
     public Map<Class<? extends Exception>, HttpStatus> exceptionToStatusCode() {
         return Map.of(
+            ResponseStatusException.class, HttpStatus.NOT_FOUND
         );
     }
 

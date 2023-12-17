@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.reactive.result.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
 @ControllerAdvice
@@ -52,8 +53,9 @@ public class CustomControllerAdvice extends ResponseEntityExceptionHandler {
         FeignException.class
     })
     public ResponseEntity<?> feignException(FeignException ex) {
-        log.info(ex.getMessage());
+        log.warn(ex.getMessage());
         return ResponseEntity.status(ex.status())
             .body(ex.contentUTF8());
     }
+
 }

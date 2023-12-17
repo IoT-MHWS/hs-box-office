@@ -34,6 +34,7 @@ public class CustomWebExceptionHandler extends AbstractErrorWebExceptionHandler 
 
   private Mono<ServerResponse> renderErrorResponse(ServerRequest request) {
     Throwable error = this.getError(request);
+    log.warn(error.getMessage());
 
     HttpStatus httpStatus = exceptionToStatusCode.getOrDefault(error.getClass(), defaultStatus);
 
