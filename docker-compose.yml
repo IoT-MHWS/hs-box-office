@@ -12,6 +12,8 @@ services:
       POSTGRES_DATABASE: db_box_office
       HS_POSTGRES_USERNAME: hs
       HS_POSTGRES_PASSWORD: example
+    ports:
+      - ${HS_BOX_OFFICE_POSTGRES_PORT:-8322}:5432
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./services/postgres/entrypoint/:/docker-entrypoint-initdb.d/
