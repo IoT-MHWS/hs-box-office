@@ -1,6 +1,6 @@
 package artgallery.hsboxoffice.controller;
 
-import artgallery.hsboxoffice.dto.TicketDTO;
+import artgallery.hsboxoffice.dto.TicketCreateDTO;
 import artgallery.hsboxoffice.configuration.ServerUserDetails;
 import artgallery.hsboxoffice.service.TicketService;
 import jakarta.validation.Valid;
@@ -46,7 +46,7 @@ public class TicketController {
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")
-    public Mono<ResponseEntity<?>> createTicket(@Valid  @RequestBody TicketDTO ticketDto, @AuthenticationPrincipal ServerUserDetails userDetails) {
+    public Mono<ResponseEntity<?>> createTicket(@Valid  @RequestBody TicketCreateDTO ticketDto, @AuthenticationPrincipal ServerUserDetails userDetails) {
         return ticketService.createTicket(ticketDto, userDetails)
                     .map(createdTicket -> ResponseEntity.status(HttpStatus.CREATED).body(createdTicket));
 
@@ -54,12 +54,13 @@ public class TicketController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public Mono<ResponseEntity<?>> updateTicket(@Min(0) @PathVariable("id") long id, @Valid @RequestBody TicketDTO ticketDto, @AuthenticationPrincipal ServerUserDetails userDetails) {
+    public Mono<ResponseEntity<?>> updateTicket(@Min(0) @PathVariable("id") long id, @Valid @RequestBody TicketCreateDTO ticketDto, @AuthenticationPrincipal ServerUserDetails userDetails) {
         return ticketService.updateTicket(id, ticketDto, userDetails)
                     .map(updatedTicket -> ResponseEntity.ok().body(updatedTicket));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Mono<ResponseEntity<?>> deleteTicket(@Min(0) @PathVariable("id") long id) {
         return ticketService.deleteTicket(id)
