@@ -2,27 +2,36 @@ services:
   eureka:
     image: ${HS_EUREKA_IMAGE:-mhws/hs-eureka:latest}
     ports:
-      - ${HS_EUREKA_PORT:-8761}:8761
+      - ${HS_EUREKA_PORT:-8325}:8761
 
   postgres:
     image: postgres:16.0-alpine
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_PASSWORD: example
       POSTGRES_DATABASE: db_box_office
-      HS_POSTGRES_USERNAME: ${HS_POSTGRES_USERNAME}
-      HS_POSTGRES_PASSWORD: ${HS_POSTGRES_PASSWORD}
+      HS_POSTGRES_USERNAME: hs
+      HS_POSTGRES_PASSWORD: example
+    ports:
+      - ${HS_BOX_OFFICE_POSTGRES_PORT:-8322}:5432
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./services/postgres/entrypoint/:/docker-entrypoint-initdb.d/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "db_box_office"]
+      start_period: 60s
+      interval: 10s
+      timeout: 60s
+      retries: 5
 
   liquibase:
     image: liquibase/liquibase:4.24-alpine
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     environment:
-      LIQUIBASE_COMMAND_USERNAME: ${HS_POSTGRES_USERNAME}
-      LIQUIBASE_COMMAND_PASSWORD: ${HS_POSTGRES_PASSWORD}
+      LIQUIBASE_COMMAND_USERNAME: hs
+      LIQUIBASE_COMMAND_PASSWORD: example
       LIQUIBASE_COMMAND_URL : jdbc:postgresql://postgres:5432/db_box_office
     volumes:
       - ./services/liquibase/changelog:/liquibase/changelog
@@ -33,15 +42,18 @@ services:
     build:
       context: .
       dockerfile: dockerfile
+    depends_on:
+      liquibase:
+        condition: service_completed_successfully
     ports:
-      - ${HS_BOX_OFFICE_PORT:-9009}:9009
+      - ${HS_BOX_OFFICE_PORT:-8320}:9009
     environment:
       HS_BOX_OFFICE_EUREKA_URI: http://eureka:8761/eureka
       HS_BOX_OFFICE_DATASOURCE_HOST: postgres 
       HS_BOX_OFFICE_DATASOURCE_PORT: 5432
       HS_BOX_OFFICE_DATASOURCE_DATABASE: db_box_office
-      HS_BOX_OFFICE_DATASOURCE_USERNAME: ${HS_POSTGRES_USERNAME}
-      HS_BOX_OFFICE_DATASOURCE_PASSWORD: ${HS_POSTGRES_PASSWORD}
+      HS_BOX_OFFICE_DATASOURCE_USERNAME: hs
+      HS_BOX_OFFICE_DATASOURCE_PASSWORD: example
 
 volumes:
   postgres-data:
