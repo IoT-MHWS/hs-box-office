@@ -23,10 +23,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @AutoConfigureMockMvc
 @SpringBootTest
+@MockBean(ExhibitionClient.class)
 public class TicketControllerTest extends AuthorizedControllerTest {
   @Autowired
   private WebTestClient webTestClient;
   static private TicketDTO ticketDTO;
+  @Autowired
+  ExhibitionClient exhibitionClient;
 
   protected static final long exhibitionId = 1;
 
@@ -36,6 +39,46 @@ public class TicketControllerTest extends AuthorizedControllerTest {
     ticketDTO.setDescription("ticket");
     ticketDTO.setPrice(1000000);
     ticketDTO.setExhibition(exhibitionId);
+  }
+
+  @BeforeEach
+  void setupFeignMock() {
+    ExhibitionDTO exhibitionDTO = new ExhibitionDTO();
+    exhibitionDTO.setId(exhibitionId);
+    exhibitionDTO.setStartDate(new Date());
+    exhibitionDTO.setEndDate(new Date());
+    exhibitionDTO.setName("exhibition");
+    exhibitionDTO.setGalleryId(2L);
+
+    Mockito.doReturn(Mono.just(exhibitionDTO))
+      .when(exhibitionClient)
+      .getExhibitionById(exhibitionId, userId, username, adminAuthorities);
+  }
+
+  @Test
+  void testTicketCreation() throws Exception {
+    String request = objectMapper.writeValueAsString(ticketDTO);
+
+    String result = webTestClient.post()
+      .uri("/api/v1/tickets/")
+      .bodyValue(request)
+      .headers(AuthorizedControllerTest::setupAdminHeaders)
+      .header("Content-Type", "application/json")
+      .accept(MediaType.APPLICATION_JSON)
+      .exchange()
+      .expectStatus()
+      .isCreated()
+      .returnResult(String.class)
+      .getResponseBody()
+      .blockFirst();
+
+    TicketDTO resultDTO = objectMapper.readValue(result, TicketDTO.class);
+
+    assertAll(
+      () -> assertEquals(ticketDTO.getDescription(), resultDTO.getDescription()),
+      () -> assertEquals(ticketDTO.getPrice(), resultDTO.getPrice()),
+      () -> assertEquals(ticketDTO.getExhibition(), resultDTO.getExhibition())
+    );
   }
 
   @Nested
@@ -61,6 +104,33 @@ public class TicketControllerTest extends AuthorizedControllerTest {
       String result = webTestClient.get()
         .uri("/api/v1/tickets/{id}", ticketDTO.getId())
         .headers(AuthorizedControllerTest::setupPublicHeaders)
+        .accept(MediaType.APPLICATION_JSON)
+        .exchange()
+        .expectStatus()
+        .isOk()
+        .returnResult(String.class)
+        .getResponseBody()
+        .blockFirst();
+
+      TicketDTO resultDTO = objectMapper.readValue(result, TicketDTO.class);
+
+      assertAll(
+        () -> assertEquals(ticketDTO.getId(), resultDTO.getId()),
+        () -> assertEquals(ticketDTO.getDescription(), resultDTO.getDescription()),
+        () -> assertEquals(ticketDTO.getPrice(), resultDTO.getPrice()),
+        () -> assertEquals(ticketDTO.getExhibition(), resultDTO.getExhibition())
+      );
+    }
+
+    @Test
+    void testTicketUpdating() throws Exception {
+      String request = objectMapper.writeValueAsString(ticketDTO);
+
+      String result = webTestClient.put()
+        .uri("/api/v1/tickets/{id}", ticketDTO.getId())
+        .bodyValue(request)
+        .headers(AuthorizedControllerTest::setupAdminHeaders)
+        .header("Content-Type", "application/json")
         .accept(MediaType.APPLICATION_JSON)
         .exchange()
         .expectStatus()
