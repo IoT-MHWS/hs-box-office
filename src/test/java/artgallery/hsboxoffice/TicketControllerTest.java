@@ -60,7 +60,7 @@ public class TicketControllerTest extends AuthorizedControllerTest {
     String request = objectMapper.writeValueAsString(ticketDTO);
 
     String result = webTestClient.post()
-      .uri("/api/v1/tickets/")
+      .uri("/api/v1/tickets")
       .bodyValue(request)
       .headers(AuthorizedControllerTest::setupAdminHeaders)
       .header("Content-Type", "application/json")

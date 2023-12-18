@@ -34,7 +34,7 @@ public class OrderControllerTest extends AuthorizedControllerTest {
     String request = objectMapper.writeValueAsString(orderCreateDTO);
 
     String result = webTestClient.post()
-      .uri("/api/v1/orders/")
+      .uri("/api/v1/orders")
       .bodyValue(request)
       .headers(AuthorizedControllerTest::setupAdminHeaders)
       .header("Content-Type", "application/json")

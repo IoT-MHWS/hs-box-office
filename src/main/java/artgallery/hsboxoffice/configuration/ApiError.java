@@ -25,4 +25,11 @@ public class ApiError {
         this.message = "Unexpected error";
         this.debugMessage = ex.getMessage();
     }
+
+    public ApiError(HttpStatus status, String message) {
+        this();
+        this.status = status;
+        this.message = message;
+        this.debugMessage = null;
+    }
 }

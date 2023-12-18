@@ -1,7 +1,5 @@
 package artgallery.hsboxoffice.configuration;
 
-import artgallery.hsboxoffice.controller.ApiError;
-import artgallery.hsboxoffice.exception.DatabaseConflictException;
 import artgallery.hsboxoffice.exception.DoesNotExistException;
 import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
@@ -11,14 +9,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.reactive.result.method.annotation.ResponseEntityExceptionHandler;
-import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
 @ControllerAdvice
 public class CustomControllerAdvice extends ResponseEntityExceptionHandler {
-
     @ResponseBody
     @ExceptionHandler({
             DoesNotExistException.class
@@ -30,20 +25,10 @@ public class CustomControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ResponseBody
     @ExceptionHandler({
-            DatabaseConflictException.class
-    })
-    public ResponseEntity<?> exIndb(Exception ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT)
-            .body(new ApiError(HttpStatus.CONFLICT, ex.getMessage()));
-    }
-
-    @ResponseBody
-    @ExceptionHandler({
             IllegalArgumentException.class,
             MethodArgumentNotValidException.class
     })
     public ResponseEntity<?> notCorrect(Exception ex) {
-
         return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
             .body(new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage()));
     }
@@ -53,7 +38,6 @@ public class CustomControllerAdvice extends ResponseEntityExceptionHandler {
         FeignException.class
     })
     public ResponseEntity<?> feignException(FeignException ex) {
-        log.warn(ex.getMessage());
         return ResponseEntity.status(ex.status())
             .body(ex.contentUTF8());
     }
