@@ -1,6 +1,5 @@
 package artgallery.hsboxoffice.configuration;
 
-import artgallery.hsboxoffice.controller.ApiError;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;

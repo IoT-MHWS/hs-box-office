@@ -1,5 +1,6 @@
 package artgallery.hsboxoffice.service;
 
+import artgallery.hsboxoffice.dto.TicketCreateDTO;
 import artgallery.hsboxoffice.dto.TicketDTO;
 import artgallery.hsboxoffice.exception.TicketDoesNotExistException;
 import artgallery.hsboxoffice.feign.ExhibitionClient;
@@ -32,7 +33,7 @@ public class TicketService {
         .map(this::mapToTicketDto);
   }
 
-  public Mono<TicketDTO> createTicket(TicketDTO ticketDto, ServerUserDetails userDetails) {
+  public Mono<TicketDTO> createTicket(TicketCreateDTO ticketDto, ServerUserDetails userDetails) {
       return exhibitionClient.getExhibitionById(ticketDto.getExhibition(),
               userDetails.getIdAsString(), userDetails.getUsername(), userDetails.getAuthoritiesAsString())
           .flatMap(exhibitionDTO -> {
@@ -43,7 +44,7 @@ public class TicketService {
           .map(this::mapToTicketDto);
     }
 
-  public Mono<TicketDTO> updateTicket(long id, TicketDTO ticketDto, ServerUserDetails userDetails) {
+  public Mono<TicketDTO> updateTicket(long id, TicketCreateDTO ticketDto, ServerUserDetails userDetails) {
     return exhibitionClient.getExhibitionById(ticketDto.getExhibition(),
         userDetails.getIdAsString(), userDetails.getUsername(), userDetails.getAuthoritiesAsString())
         .flatMap(exhibitionDTO -> ticketRepository.findById(id)
@@ -61,7 +62,7 @@ public class TicketService {
     return ticketRepository.deleteById(id);
   }
 
-  private TicketEntity mapToTicketEntity(TicketDTO ticketDto) {
+  private TicketEntity mapToTicketEntity(TicketCreateDTO ticketDto) {
     TicketEntity ticketEntity = new TicketEntity();
     ticketEntity.setDescription(ticketDto.getDescription());
     ticketEntity.setPrice(ticketDto.getPrice());
