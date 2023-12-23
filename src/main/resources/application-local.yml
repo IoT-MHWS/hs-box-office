@@ -18,6 +18,17 @@ springdoc:
   swagger-ui:
     path: "/swagger-ui"
 
+db:
+  host: ${HS_BOX_OFFICE_DATASOURCE_HOST}
+  port: ${HS_BOX_OFFICE_DATASOURCE_PORT}
+  database: ${HS_BOX_OFFICE_DATASOURCE_DATABASE}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
 # logging:
 #   level:
 #     org:
