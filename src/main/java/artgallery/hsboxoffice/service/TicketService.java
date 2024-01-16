@@ -17,4 +17,6 @@ public interface TicketService {
   Mono<TicketDTO> updateTicket(long id, TicketCreateDTO ticketDto, ServerUserDetails userDetails);
 
   Mono<Void> deleteTicket(long id);
+
+  Mono<Void> deleteTicketsByExhibitionId(long id);
 }

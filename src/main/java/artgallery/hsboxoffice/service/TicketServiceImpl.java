@@ -62,6 +62,10 @@ public class TicketServiceImpl implements TicketService {
     return ticketRepository.deleteById(id);
   }
 
+  public Mono<Void> deleteTicketsByExhibitionId(long id) {
+      return ticketRepository.deleteAllByExhibition(id);
+  }
+
   private TicketEntity mapToTicketEntity(TicketCreateDTO ticketDto) {
     TicketEntity ticketEntity = new TicketEntity();
     ticketEntity.setDescription(ticketDto.getDescription());
