@@ -16,6 +16,13 @@ services:
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL:PLAINTEXT
       - KAFKA_CFG_CONTROLLER_LISTENER_NAMES=CONTROLLER
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=PLAINTEXT
+    healthcheck:
+      # https://github.com/bitnami/containers/issues/33325#issuecomment-1541443315
+      test: kafka-topics.sh --bootstrap-server kafka:9092 --topic hc --create --if-not-exists && kafka-topics.sh --bootstrap-server kafka:9092 --topic hc --describe || exit -1
+      start_period: 15s
+      interval: 5s
+      timeout: 10s
+      retries: 10
 
   eureka:
     image: ${HS_EUREKA_IMAGE:-mhws/hs-eureka:latest}
@@ -61,12 +68,15 @@ services:
       context: .
       dockerfile: dockerfile
     depends_on:
+      kafka:
+        condition: service_healthy
       liquibase:
         condition: service_completed_successfully
     ports:
       - ${HS_BOX_OFFICE_PORT:-8320}:9009
     environment:
       HS_BOX_OFFICE_EUREKA_URI: http://eureka:8761/eureka
+      HS_BOX_OFFICE_KAFKA_URI: http://kafka:9092
       HS_BOX_OFFICE_DATASOURCE_HOST: postgres 
       HS_BOX_OFFICE_DATASOURCE_PORT: 5432
       HS_BOX_OFFICE_DATASOURCE_DATABASE: db_box_office
