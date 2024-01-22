@@ -1,0 +1,4 @@
+FROM liquibase/liquibase:4.24-alpine
+
+COPY services/liquibase/liquibase.box-office.properties /liquibase/liquibase.properties
+COPY services/liquibase/changelog /liquibase/changelog
